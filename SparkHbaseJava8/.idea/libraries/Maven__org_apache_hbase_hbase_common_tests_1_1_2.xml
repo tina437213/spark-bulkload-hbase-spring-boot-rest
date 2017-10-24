@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.apache.hbase:hbase-common:tests:1.1.2">
+    <CLASSES>
+      <root url="jar://D:/m2/repository/org/apache/hbase/hbase-common/1.1.2/hbase-common-1.1.2-tests.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://D:/m2/repository/org/apache/hbase/hbase-common/1.1.2/hbase-common-1.1.2-test-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://D:/m2/repository/org/apache/hbase/hbase-common/1.1.2/hbase-common-1.1.2-test-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
