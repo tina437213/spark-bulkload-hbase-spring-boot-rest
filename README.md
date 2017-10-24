@@ -72,11 +72,11 @@ mvn clean package
 ```
 you will get an zip package under dir target
 ```
---
-  --bin
-  --conf
-  --jar
-  --lib
+|--
+  |--bin
+  |--conf
+  |--jar
+  |--lib
 ```
 copy the zip to your test or product host, then
 ```
@@ -91,8 +91,29 @@ scan 'tinawang:check',{STARTROW => '01dbdebfbc84bad48d92aa7c045019e8d',STOPROW =
 ps: the STARTROW and STOPROW can be set according to the previous scan cmd and truncate the rowkey prefix
 ### HbaseWeb
 ```
+mvn clean package
 ```
-you will get an jar package, and copy it somewhere, then exe the following command
-
+you will get a fat jar package, and copy it somewhere, then exe the following command
+```
+java -jar hbase-web-1.0-SNAPSHOT.jar
+```
+if you want to deploy the service to ignore the HUP (hangup) signal ,you can also do
+```
+nohup java -jar hbase-web-1.0-SNAPSHOT.jar &
+```
 ## Example
+after you deploy the SparkHbase and HbaseWeb, you can access the url where hadoop is you deploy host
+```
+http://hadoop:8091/swagger-ui.html
+```
+if you run the HbaseWeb project under dev env, you only need replace the 'hadoop' to localhost.
+
+an test example
+open the url in the explorer
+![](https://github.com/tina437213/spark-bulkload-hbase-spring-boot-rest/tree/master/img/hbase-web-app01.png)
+input query data
+![](https://github.com/tina437213/spark-bulkload-hbase-spring-boot-rest/tree/master/img/hbase-web-app02.png)
+try it
+![](https://github.com/tina437213/spark-bulkload-hbase-spring-boot-rest/tree/master/img/hbase-web-app03.png)
+
 ## Documentation
