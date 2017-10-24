@@ -108,12 +108,16 @@ http://hadoop:8091/swagger-ui.html
 ```
 if you run the HbaseWeb project under dev env, you only need replace the 'hadoop' to localhost.
 
-an test example
+an test example 
+
 open the url in the explorer
-![](https://github.com/tina437213/spark-bulkload-hbase-spring-boot-rest/tree/master/img/hbase-web-app01.png)
+
+![](https://raw.githubusercontent.com/tina437213/spark-bulkload-hbase-spring-boot-rest/master/img/hbase-web-app01.png)  
+
 input query data
-![](https://github.com/tina437213/spark-bulkload-hbase-spring-boot-rest/tree/master/img/hbase-web-app02.png)
+![](https://raw.githubusercontent.com/tina437213/spark-bulkload-hbase-spring-boot-rest/master/img/hbase-web-app02.png) 
+
 try it
-![](https://github.com/tina437213/spark-bulkload-hbase-spring-boot-rest/tree/master/img/hbase-web-app03.png)
+![](https://raw.githubusercontent.com/tina437213/spark-bulkload-hbase-spring-boot-rest/master/img/hbase-web-app03.png)  
 
 ## Documentation
