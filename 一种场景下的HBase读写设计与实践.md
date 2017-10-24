@@ -36,7 +36,7 @@
 
 图示如下：
 
-![](https://raw.githubusercontent.com/tina437213/spark-bulkload-hbase-spring-boot-rest/master/img/spark-hbase-rest.png)
+![](https://raw.githubusercontent.com/tina437213/spark-bulkload-hbase-spring-boot-rest/master/img/spark-hbase-rest.jpg)
 
 ## 三、设计
 
