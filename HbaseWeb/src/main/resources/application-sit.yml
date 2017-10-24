@@ -1,0 +1,6 @@
+hbaseenv:
+  krb5conf: /etc/krb5.conf
+  coresite: /usr/hdp/2.6.1.0-129/hadoop/conf/core-site.xml
+  hbasesite: /usr/hdp/2.6.1.0-129/hbase/conf/hbase-site.xml
+  user: tina@GNUHPC.ORG
+  keypath: /home/tina/project/kerberos/tina.keytab

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--DEBUG,INFO,WARN,ERROR,FATAL-->
+<configuration>
+    <springProfile name="dev">
+        <contextName>HbaseWebApplication</contextName>
+        <!--日志总路径-->
+        <property name="LOG_PATH" value="D:\\JavaWebLogs" />
+        <!--设置应用日志目录-->
+        <property name="APPDIR" value="HbaseWebApplication" />
+
+        <!--appender:console 控制台日志-->
+        <!-- 彩色日志格式 -->
+        <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+        <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+        <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+        <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}" />
+
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+                <charset>utf8</charset>
+            </encoder>
+            <!--此日志appender是为开发使用，只配置最底级别，控制台输出的日志级别是大于或等于此级别的日志信息-->
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>DEBUG</level>
+            </filter>
+        </appender>
+
+        <!-- 日志记录器，写入文件，日期滚动记录 -->
+        <!-- appender:FILE 文件日志-->
+        <appender name="FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <!-- 正在记录的日志文件的路径及文件名 -->
+            <file>${LOG_PATH}/${APPDIR}/current.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <!--日志文件输出的文件名-->
+                <FileNamePattern>${LOG_PATH}/${APPDIR}/%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+                <!--日志文件保留天数-->
+                <MaxHistory>365</MaxHistory>
+                <!-- 除按日志记录之外，还配置了日志文件不能超过2M，若超过2M，日志文件会以索引0开始，
+                命名日志文件，例如log-error-2013-12-21.0.log -->
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>10MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+            </rollingPolicy>
+            <!-- 追加方式记录日志 -->
+            <append>true</append>
+            <!-- 日志文件的格式 -->
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger Line:%-3L - %msg%n</pattern>
+                <charset>utf-8</charset>
+            </encoder>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+            <!--<appender-ref ref="FILE" />-->
+        </root>
+    </springProfile>
+
+    <springProfile name="sit">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger Line:%-3L - %msg%n</pattern>
+                <charset>utf8</charset>
+            </encoder>
+            <!--此日志appender是为开发使用，只配置最底级别，控制台输出的日志级别是大于或等于此级别的日志信息-->
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>DEBUG</level>
+            </filter>
+        </appender>
+
+        <property name="LOG_PATH" value="logs/hbase-web" />
+        <!--设置应用日志目录-->
+        <property name="APPDIR" value="HbaseWebApplication" />
+        <appender name="FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <!-- 正在记录的日志文件的路径及文件名 -->
+            <file>${LOG_PATH}/${APPDIR}/current.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <!--日志文件输出的文件名-->
+                <FileNamePattern>${LOG_PATH}/${APPDIR}/%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+                <!--日志文件保留天数-->
+                <MaxHistory>365</MaxHistory>
+                <!-- 除按日志记录之外，还配置了日志文件不能超过10M，若超过2M，日志文件会以索引0开始，
+                命名日志文件，例如log-error-2013-12-21.0.log -->
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>10MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+            </rollingPolicy>
+            <!-- 追加方式记录日志 -->
+            <append>true</append>
+            <!-- 日志文件的格式 -->
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger Line:%-3L - %msg%n</pattern>
+                <charset>utf-8</charset>
+            </encoder>
+        </appender>
+
+        <root level="INFO">
+            <!--<appender-ref ref="CONSOLE" />-->
+            <appender-ref ref="FILE" />
+        </root>
+    </springProfile>
+
+
+</configuration>

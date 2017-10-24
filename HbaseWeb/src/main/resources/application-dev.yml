@@ -1,0 +1,6 @@
+hbaseenv:
+  krb5conf: D:\\JavaProject\\hbase-app\\kerberos\\krb5.conf
+  coresite: D:\\JavaProject\\hbase-app\\kerberos\\core-site.xml
+  hbasesite: D:\\JavaProject\\hbase-app\\kerberos\\hbase-site.xml
+  user: tina@GNUHPC.ORG
+  keypath: D:\\JavaProject\\hbase-app\\kerberos\\tina.keytab

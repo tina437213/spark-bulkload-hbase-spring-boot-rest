@@ -1,0 +1,33 @@
+spring:
+  profiles:
+    active: sit
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+hbaseenv:
+  security: kerberos
+  zkparent: /hbase-secure
+server:
+  port: 8091
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
