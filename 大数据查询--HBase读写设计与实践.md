@@ -1,8 +1,8 @@
-# 一种场景下的HBase读写设计与实践
+# 大数据查询--HBase读写设计与实践
 
 ## 一、背景介绍
 
-​	本项目主要解决check和opinion2张历史数据表（历史数据是指当业务发生过程中的完整中间流程和结果数据）的在线查询。原实现基于Oracle提供存储查询服务，随着数据量的不断增加，在写入和读取过程中面临性能问题，且历史数据仅供业务查询参考，并不影响实际流程，从系统结构上来说，放在业务链条上游比较重。本项目将其置于下游数据处理hadoop分布式平台来实现此需求。下面列一些具体的需求指标：
+本项目主要解决check和opinion2张历史数据表（历史数据是指当业务发生过程中的完整中间流程和结果数据）的在线查询。原实现基于Oracle提供存储查询服务，随着数据量的不断增加，在写入和读取过程中面临性能问题，且历史数据仅供业务查询参考，并不影响实际流程，从系统结构上来说，放在业务链条上游比较重。本项目将其置于下游数据处理hadoop分布式平台来实现此需求。下面列一些具体的需求指标：
 
 ```
 1、 数据量：目前check表的累计数据量为5000w+行，11GB；opinion表的累计数据量为3亿+，约100GB。每日增量约为每张表50万+行，只做insert，不做update。
@@ -12,7 +12,7 @@
 
 ## 二、技术选型
 
-​	从数据量及查询要求来看，分布式平台上具备大数据量存储，且提供实时查询能力的组件首选HBase。根据需求做了初步的调研和评估后，大致确定HBase作为主要存储组件。将需求拆解为写入和读取HBase两部分。
+从数据量及查询要求来看，分布式平台上具备大数据量存储，且提供实时查询能力的组件首选HBase。根据需求做了初步的调研和评估后，大致确定HBase作为主要存储组件。将需求拆解为写入和读取HBase两部分。
 
 读取HBase相对来说方案比较确定，基本根据需求设计RowKey，然后根据HBase提供的丰富API（get，scan等）来读取数据，满足性能要求即可。
 
@@ -73,7 +73,7 @@ Sqoop 1.4.6
 
 #### 3.3.1 热点问题
 
-hbase 中的行是以 RowKey 的字典序排序的，其热点问题通常发生在大量的客户端直接访问集群的一个或极少数节点。默认情况下，在开始建表时，表只会有一个region，并随着region增大而拆分成更多的region，这些region才能分布在多个regionserver上从而使负载均分。对于我们的业务需求，存量数据已经较大，因此有必要在一开始就将HBase的负载均摊到每个regionserver，即做pre-split。常见的防治热点的方法为加盐，hash，自增部分（如时间戳）翻转等。
+hbase 中的行是以 RowKey 的字典序排序的，其热点问题通常发生在大量的客户端直接访问集群的一个或极少数节点。默认情况下，在开始建表时，表只会有一个region，并随着region增大而拆分成更多的region，这些region才能分布在多个regionserver上从而使负载均分。对于我们的业务需求，存量数据已经较大，因此有必要在一开始就将HBase的负载均摊到每个regionserver，即做pre-split。常见的防治热点的方法为加盐，hash散列，自增部分（如时间戳）翻转等。
 
 #### 3.3.2 RowKey设计
 
@@ -94,7 +94,7 @@ COMPRESSION => 'SNAPPY'，hbase支持3种压缩LZO, GZIP and Snappy。GZIP压缩
 DATA_BLOCK_ENCODING => 'FAST_DIFF'，本案例中RowKey较为接近，通过以下命令查看key长度相对value较长。
 
 ```
-./hbase org.apache.hadoop.hbase.io.hfile.HFile -m -f  /hyperbase1/data/tinawang/check/a661f0f95598662a53b3d8b1ae469fdf/f/a5fefc880f87492d908672e1634f2eed_SeqId_2_
+./hbase org.apache.hadoop.hbase.io.hfile.HFile -m -f  /apps/hbase/data/data/tinawang/check/a661f0f95598662a53b3d8b1ae469fdf/f/a5fefc880f87492d908672e1634f2eed_SeqId_2_
 ```
 
 ![](https://raw.githubusercontent.com/tina437213/spark-bulkload-hbase-spring-boot-rest/master/img/hfile.png)
@@ -107,7 +107,7 @@ DATA_BLOCK_ENCODING => 'FAST_DIFF'，本案例中RowKey较为接近，通过以�
 `StringUtils.leftPad(Integer.toString(Math.abs(check_id.hashCode() % numRegion)),1,’0’)`
 说明：如果数据量达上百G以上，则numRegions自然到2位数，则salt也为2位。
 
-**Hash**
+**Hash散列**
 
 因为check_id本身是不定长的字符数字串，为使数据散列化，方便RowKey查询和比较，我们对check_id采用SHA1散列化，并使之32位定长化。
 
@@ -135,7 +135,7 @@ RowKey设计与查询息息相关，查询方式决定RowKey设计，反之基�
 
 ```
 startRow = 7+7c9498b4a83974da56b252122b9752bf
-stopRow = 7+7c9498b4a83974da56b252122b9752bg
+stopRow =  7+7c9498b4a83974da56b252122b9752bg
 ```
 
 
@@ -164,11 +164,13 @@ SparkContext.textfile()默认行分隔符为”\n”，此处我们用“0x10”
 
 **Step2: Transfer and sort RDD**  
 
-①  将avaRDD< String>转换成JavaPairRDD<Tuple2<String,String>,String>，其中参数依次表示为，RowKey，col，value。做这样转换是因为HBase的基本原理是基于RowKey排序的，并且当采用bulk load方式将数据写入多个预分区（region）时，要求spark各partition的数据是有序的，RowKey，column family（cf），col name均需要有序。在本案例中因为只有一个列簇，所有将RowKey和col组织出来。请注意原本数据库中的一行记录，n列，此时会被拆成n行。
+①  将avaRDD< String>转换成JavaPairRDD<Tuple2<String,String>,String>，其中参数依次表示为，RowKey，col，value。做这样转换是因为HBase的基本原理是基于RowKey排序的，并且当采用bulk load方式将数据写入多个预分区（region）时，要求spark各partition的数据是有序的，RowKey，column family（cf），col name均需要有序。在本案例中因为只有一个列簇，所以将RowKey和col name组织出来为Tuple2<String,String>格式的key。请注意原本数据库中的一行记录（n个字段），此时会被拆成n行。
 
 ② 基于JavaPairRDD<Tuple2<String,String>,String>进行RowKey，col的二次排序。如果不做排序，会报以下异常：
 
+```
 java.io.IOException: Added a key notlexically larger than previous key
+```
 
 ③ 将数据组织成HFile要求的JavaPairRDD<ImmutableBytesWritable,KeyValue> hfileRDD。
 
@@ -197,7 +199,7 @@ bulkLoader.doBulkLoad(newPath(hfilePath),htable);
 ```
 UserGroupInformation ugi =
                    UserGroupInformation.loginUserFromKeytabAndReturnUGI(keyUser,keytabPath);
-            UserGroupInformation.setLoginUser(ugi);
+UserGroupInformation.setLoginUser(ugi);
 ```
 
 访问hbase集群的60010端口web，可以看到region分布情况。
@@ -339,9 +341,7 @@ Exception in thread "http-nio-8091-exec-34" java.lang.NoClassDefFoundError: ch/q
 
 使用ulimit-a  查看每个用户默认打开的文件数为1024。
 
-在系统文件/etc/security/limits.conf中修改这个数量限制，
-
-在文件中加入内容：
+在系统文件/etc/security/limits.conf中修改这个数量限制，在文件中加入以下内容,即可解决问题。
 
 ```
 * soft nofile 65536 
