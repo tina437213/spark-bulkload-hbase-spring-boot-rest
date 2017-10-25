@@ -121,3 +121,5 @@ try it
 ![](https://raw.githubusercontent.com/tina437213/spark-bulkload-hbase-spring-boot-rest/master/img/hbase-web-app03.png)  
 
 ## Documentation
+[大数据查询--HBase读写设计与实践](https://github.com/tina437213/spark-bulkload-hbase-spring-boot-rest/blob/master/%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%9F%A5%E8%AF%A2--HBase%E8%AF%BB%E5%86%99%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E8%B7%B5.md)
+
